@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@theme {
+  /* Fonts */
+  --font-title: "Space Grotesk", sans-serif;
+  --font-body: system-ui, sans-serif;
+
+  /* Container width */
+  --container-max: 1300px;
+
+  /* Brand colors tipo FM Dos */
+  --color-brand-50: #faf5ff;
+  --color-brand-100: #f3e8ff;
+  --color-brand-200: #e9d5ff;
+  --color-brand-300: #d8b4fe;
+  --color-brand-400: #c084fc;
+  --color-brand-500: #a855f7;
+  --color-brand-600: #9333ea;
+  --color-brand-700: #7e22ce;
+  --color-brand-800: #6b21a8;
+  --color-brand-900: #581c87;
+}
+
+/* ============================= */
+/* Base styles */
+/* ============================= */
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-title);
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .container-radio {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .title-notice {
+    font-family: var(--font-title);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #202120;
+    /* background: linear-gradient(90deg, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; */
+  }
+
+  .badge-live {
+    @apply text-xs text-red-500 animate-pulse;
+  }
+}

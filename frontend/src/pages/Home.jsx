@@ -1,19 +1,37 @@
-import LatestNewsSkeleton from "../components/LatestNewsSkeleton";
-import NewsCardLarge from "../components/news/NewsCardLarge";
-import { useNoticiasHome } from "../hooks/useNoticiasHome";
-import LatestNewsSection from "../sections/home/LatestNewsSection";
+import LoUltimoSection from "../sections/home/LoUltimoSection";
+import { useHomeSections } from "../hooks/useHomeSections";
+import HeroSection from "../sections/home/HeroSection";
+import HomeHeroSkeleton from "../components/home-layouts/skeletons/HomeHeroSkeleton";
+import HomeSplitTwoColSkeleton from "../components/home-layouts/skeletons/HomeSplitTwoColSkeleton";
+import HomeHeroNewsTendenciasSkeleton from "../components/home-layouts/skeletons/HomeHeroNewsTendenciasSkeleton";
+import TendenciasSection from "../sections/home/TendenciasSection";
+import EspectaculosSection from "../sections/home/EspectaculosSection";
+import DestacadasSection from "../sections/home/DestacadasSection";
 
 const Home = () => {
-  const { data = [], isLoading } = useNoticiasHome();
+  const { data, isLoading } = useHomeSections();
 
-  if (isLoading) return <LatestNewsSkeleton />;
+  if (isLoading)
+    return (
+      <div className="space-y-12">
+        <HomeHeroSkeleton />
+        <HomeSplitTwoColSkeleton />
+        <HomeHeroNewsTendenciasSkeleton />
+      </div>
+    );
 
-  const [hero, ...latest] = data;
+  console.log("HOME DATA:", data);
+  console.log("loUltimo:", data?.loUltimo);
 
   return (
-    <div className="space-y-10">
-      <NewsCardLarge noticia={hero} />
-      <LatestNewsSection noticiasLoUltimo={latest} />
+    <div className="space-y-12">
+      <HeroSection items={data.hero} />
+      {data.loUltimo?.length >= 2 && <LoUltimoSection items={data.loUltimo} />}
+      <DestacadasSection items={data.destacadas} />
+      {data.tendencias?.length >= 3 && (
+        <TendenciasSection items={data.tendencias} />
+      )}
+      <EspectaculosSection items={data.espectaculos} />
     </div>
   );
 };

@@ -4,7 +4,7 @@ const HomeCardsGridLayout = ({ items = [], title }) => {
   if (items.length < 3) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 space-y-10">
+    <section className="max-w-7xl mx-auto lg:px-4 p-1 space-y-10">
       {title && (
         <h2
           className="

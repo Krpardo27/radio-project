@@ -21,7 +21,7 @@ const NewsCardLarge = ({ noticia, showExtra = true }) => {
       className="block space-y-4 group focus:outline-none"
     >
       {/* IMAGEN */}
-      <div className="relative aspect-video overflow-hidden bg-zinc-900 rounded-xl">
+      <div className="relative aspect-video overflow-hidden bg-zinc-900">
         <img
           src={noticia.image}
           alt={noticia.title}

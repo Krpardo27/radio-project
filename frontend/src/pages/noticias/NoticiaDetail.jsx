@@ -12,7 +12,7 @@ const NoticiaDetail = () => {
     return <p className="text-center py-20">Noticia no encontrada</p>;
 
   return (
-    <article className="max-w-4xl mx-auto p-4 space-y-8">
+    <article className="max-w-4xl mx-auto lg:p-4 p-1 space-y-8">
       {/* CATEGORY */}
       {noticia.category && (
         <Link
@@ -37,7 +37,7 @@ const NoticiaDetail = () => {
       <img
         src={noticia.image}
         alt={noticia.title}
-        className="w-full rounded-xl object-cover"
+        className="w-full object-cover"
         loading="eager"
         fetchPriority="high"
       />

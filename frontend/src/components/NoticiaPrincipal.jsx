@@ -12,7 +12,7 @@ const NoticiaPrincipal = ({ noticia }) => {
             src={noticia.image}
             alt={noticia.title}
             loading="eager"
-            fetchpriority="high"
+            fetchPriority="high"
             decoding="async"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -26,11 +26,28 @@ const NoticiaPrincipal = ({ noticia }) => {
         </span>
 
         <h1 className="title-notice">{noticia.title}</h1>
-
         <p className="text-zinc-400">{noticia.excerpt}</p>
+        <div className="text-xs text-zinc-500 flex items-center gap-2 justify-center">
+          {noticia.author?.avatar && (
+            <img
+              src={noticia.author.avatar}
+              alt={noticia.author.name}
+              className="w-6 h-6 rounded-full object-cover"
+              loading="lazy"
+            />
+          )}
 
-        <div className="text-xs text-zinc-500">
-          {noticia.author} · {noticia.date}
+          <span>
+            Por{" "}
+            <span className="font-medium text-zinc-300">
+              {typeof noticia.author === "string"
+                ? noticia.author
+                : noticia.author?.name}
+            </span>
+          </span>
+
+          <span>·</span>
+          <span>{noticia.date}</span>
         </div>
 
         <Link

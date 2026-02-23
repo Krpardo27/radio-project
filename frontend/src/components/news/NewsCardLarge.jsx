@@ -41,10 +41,29 @@ const NewsCardLarge = ({ noticia }) => {
         )}
 
         {(noticia.author || noticia.date) && (
-          <div className="text-xs text-zinc-500">
-            {noticia.author}
-            {noticia.author && noticia.date && " · "}
-            {noticia.date}
+          <div className="text-xs text-zinc-500 flex items-center gap-2">
+            {noticia.author?.avatar && (
+              <img
+                src={noticia.author.avatar}
+                alt={noticia.author.name}
+                className="w-5 h-5 rounded-full object-cover"
+                loading="lazy"
+              />
+            )}
+
+            {noticia.author && (
+              <span>
+                Por{" "}
+                <span className="font-medium text-zinc-300">
+                  {typeof noticia.author === "string"
+                    ? noticia.author
+                    : noticia.author?.name}
+                </span>
+              </span>
+            )}
+
+            {noticia.author && noticia.date && <span>·</span>}
+            {noticia.date && <span>{noticia.date}</span>}
           </div>
         )}
       </div>

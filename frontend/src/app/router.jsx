@@ -7,6 +7,7 @@ import Concursos from "../pages/Concursos";
 import Tickets from "../pages/Tickets";
 import Espectaculos from "../pages/Espectaculos";
 import EnVivo from "../pages/EnVivo";
+import NoticiaDetail from "../pages/noticias/NoticiaDetail";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
         path: "en-vivo",
         element: <EnVivo />,
       },
+      { path: "noticia/:slug", element: <NoticiaDetail /> },
     ],
   },
 ]);

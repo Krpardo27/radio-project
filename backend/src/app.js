@@ -11,6 +11,29 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173", // vite dev
+  "http://localhost:5000",
+  "https://radio-project-lemon.vercel.app/",
+  "https://radio-project-x44p.onrender.com/",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("❌ CORS blocked: " + origin));
+      }
+    },
+    credentials: true,
+  }),
+);
+
 app.get("/", (req, res) => {
   res.json({ ok: true, msg: "Radio API running 🚀" });
 });

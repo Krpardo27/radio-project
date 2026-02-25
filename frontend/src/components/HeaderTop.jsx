@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const HeaderTop = () => {
   return (
     <div className="w-full border-b text-zinc-900">
-      <div className="max-w-325 mx-auto px-4 py-5 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-5 flex items-center justify-between">
         {/* LEFT ICONS */}
         <div className="flex items-center gap-4 text-purple-700 text-xl">
           <FiMenu className="cursor-pointer" />

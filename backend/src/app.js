@@ -12,11 +12,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "http://localhost:5173", // vite dev
-  "http://localhost:5000",
-  "https://radio-project-lemon.vercel.app/",
-  "https://radio-project-x44p.onrender.com/",
+  "http://localhost:5173",
+  "https://radio-project-lemon.vercel.app",
 ];
 
 app.use(

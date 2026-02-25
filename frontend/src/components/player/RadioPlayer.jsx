@@ -1,43 +1,102 @@
-import React, { useState } from "react";
-import { FiPlay, FiPause, FiVolume2 } from "react-icons/fi";
+import {
+  FiPlay,
+  FiPause,
+  FiChevronUp,
+  FiLoader,
+  FiSkipBack,
+  FiSkipForward,
+} from "react-icons/fi";
+import RadioPanel from "./RadioPanel";
+import { useRadioPlayer } from "../../hooks/useRadioPlayer";
+import { useEffect } from "react";
+import { AnimatePresence, m } from "framer-motion";
+import { useStations } from "../../hooks/useStations";
 
 const RadioPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const { data: stations = [] } = useStations();
+
+  const {
+    station,
+    isPlaying,
+    volume,
+    openPanel,
+    setOpenPanel,
+    toggle,
+    changeVolume,
+    isLoading,
+    setStations,
+    nextStation,
+    prevStation,
+    changeStation,
+  } = useRadioPlayer();
+
+  console.log("stations:", stations);
+  console.log("station:", station);
+
+  // 👉 cargar stations en context
+  useEffect(() => {
+    if (stations.length) {
+      setStations(stations);
+      changeStation(stations[0]);
+    }
+  }, [stations]);
+
+  if (!station) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-black border-t border-zinc-800 z-50">
-      {/* container centrado */}
-      <div className="mx-auto w-full max-w-[1100px] px-4 py-3 flex items-center justify-between gap-4">
-        {/* info */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold">Radio Project</span>
-          <span className="text-xs text-red-500 animate-pulse">● EN VIVO</span>
-        </div>
+    <>
+      <div className="fixed bottom-0 left-0 w-full z-50 bg-[#532487] border-t border-white/10">
+        <div className="max-w-285 mx-auto px-4 py-3 flex justify-between">
+          {/* INFO */}
+          <div className="flex items-center gap-3">
+            <img src={station.logo?.url} className="w-10 h-10 rounded-xl" />
+            <div>
+              <p className="text-sm font-semibold">{station.name}</p>
+              <p className="text-xs">{station.description}</p>
+            </div>
+          </div>
 
-        {/* controles */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="bg-fuchsia-600 hover:bg-fuchsia-700 px-4 py-2 rounded-lg flex items-center gap-2"
-          >
-            {isPlaying ? <FiPause /> : <FiPlay />}
-          </button>
+          {/* CONTROLES */}
+          <div className="flex items-center gap-4">
+            <button onClick={prevStation}>
+              <FiSkipBack size={18} />
+            </button>
 
-          <div className="flex items-center gap-2">
-            <FiVolume2 />
+            <button
+              onClick={toggle}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-fuchsia-600 text-white"
+            >
+              {isLoading ? (
+                <FiLoader className="animate-spin" />
+              ) : isPlaying ? (
+                <FiPause />
+              ) : (
+                <FiPlay />
+              )}
+            </button>
+
+            <button onClick={nextStation}>
+              <FiSkipForward size={18} />
+            </button>
+
             <input
               type="range"
               min="0"
               max="1"
               step="0.05"
               value={volume}
-              onChange={(e) => setVolume(Number(e.target.value))}
+              onChange={(e) => changeVolume(Number(e.target.value))}
             />
+
+            <button onClick={() => setOpenPanel(!openPanel)}>
+              <FiChevronUp className={openPanel ? "rotate-180" : ""} />
+            </button>
           </div>
         </div>
       </div>
-    </div>
+
+      <RadioPanel station={station} />
+    </>
   );
 };
 

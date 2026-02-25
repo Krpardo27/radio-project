@@ -25,13 +25,15 @@ const Home = () => {
 
   return (
     <div className="space-y-12">
-      <HeroSection items={data.hero} />
-      {data.loUltimo?.length >= 2 && <LoUltimoSection items={data.loUltimo} />}
-      <DestacadasSection items={data.destacadas} />
-      {data.tendencias?.length >= 3 && (
+      <HeroSection items={data?.hero ?? []} />
+      {(data?.loUltimo ?? []).length >= 1 && (
+        <LoUltimoSection items={data.loUltimo} />
+      )}
+      <DestacadasSection items={data?.destacadas ?? []} />
+      {(data?.tendencias ?? []).length >= 3 && (
         <TendenciasSection items={data.tendencias} />
       )}
-      <EspectaculosSection items={data.espectaculos} />
+      <EspectaculosSection items={data?.espectaculos ?? []} />
     </div>
   );
 };

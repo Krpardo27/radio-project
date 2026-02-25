@@ -10,8 +10,8 @@ const MainLayout = () => {
         <main className="flex-1 pt-6 pb-28">
           <Outlet />
         </main>
-      </div>
       <RadioPlayer />
+      </div>
     </div>
   );
 };

@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { homeSections } from "../data/homeSections";
+import { api } from "../services/api";
 
 export const useHomeSections = () =>
   useQuery({
-    queryKey: ["home", "sections"],
+    queryKey: ["home-sections"],
     queryFn: async () => {
-      await new Promise((r) => setTimeout(r, 300));
-      return homeSections;
+      const { data } = await api.get("/api/home");
+      return data;
     },
-    staleTime: 1000 * 60 * 5,
   });

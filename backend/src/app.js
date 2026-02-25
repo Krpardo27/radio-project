@@ -8,8 +8,6 @@ import stationRoutes from "./routes/StationRoutes.js";
 import homeRoutes from "./routes/HomeRoutes.js";
 
 app.use(cors());
-app.use(express.json());
-app.use(morgan("dev"));
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -18,18 +16,21 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("❌ CORS blocked: " + origin));
+      if (allowedOrigins.includes(origin) || origin?.endsWith(".vercel.app")) {
+        return callback(null, true);
       }
+
+      return callback(new Error("CORS blocked: " + origin));
     },
     credentials: true,
   }),
 );
+
+app.use(express.json());
+app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
   res.json({ ok: true, msg: "Radio API running 🚀" });

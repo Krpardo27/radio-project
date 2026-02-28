@@ -5,12 +5,12 @@ import Header from "../components/Header";
 const MainLayout = () => {
   return (
     <div className="min-h-screen text-white flex flex-col">
-      <div className="max-w-285 mx-auto w-full px-4">
+      <div className="max-w-285 mx-auto w-full lg:px-4 px-3">
         <Header />
         <main className="flex-1 pt-6 pb-28">
           <Outlet />
         </main>
-      <RadioPlayer />
+        <RadioPlayer />
       </div>
     </div>
   );

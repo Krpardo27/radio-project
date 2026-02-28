@@ -57,7 +57,11 @@ const RadioPlayer = () => {
 
             {/* 👉 Texto compacto */}
             <div className="min-w-0">
-              <p className="text-sm font-semibold truncate">{station.name}</p>
+              <div className="overflow-hidden w-[150px] sm:w-[200px] md:w-auto">
+                <div className="flex whitespace-nowrap animate-[marquee_10s_linear_infinite] md:animate-none">
+                  <span className="mr-10">{station.name}</span>
+                </div>
+              </div>
               <p className="hidden sm:block text-xs opacity-80 truncate">
                 {station.description}
               </p>

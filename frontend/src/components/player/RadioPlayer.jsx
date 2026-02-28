@@ -33,38 +33,46 @@ const RadioPlayer = () => {
   console.log("stations:", stations);
   console.log("station:", station);
 
-  // 👉 cargar stations en context
   useEffect(() => {
-    if (stations.length) {
+    if (stations.length && !station) {
       setStations(stations);
-      changeStation(stations[0]);
+      changeStation(stations[0], { autoplay: true });
     }
-  }, [stations]);
+  }, [stations, station]);
 
   if (!station) return null;
 
   return (
     <>
       <div className="fixed bottom-0 left-0 w-full z-50 bg-[#532487] border-t border-white/10">
-        <div className="max-w-285 mx-auto px-4 py-3 flex justify-between">
+        <div className="max-w-285 mx-auto px-3 py-2 flex items-center justify-between gap-3">
           {/* INFO */}
-          <div className="flex items-center gap-3">
-            <img src={station.logo?.url} className="w-10 h-10 rounded-xl" />
-            <div>
-              <p className="text-sm font-semibold">{station.name}</p>
-              <p className="text-xs">{station.description}</p>
+          <div className="flex items-center gap-2 min-w-0">
+            {/* 👉 Imagen siempre visible */}
+            <img
+              src={station.logo?.url}
+              alt={station.name}
+              className="w-9 h-9 md:w-10 md:h-10 rounded-xl shrink-0"
+            />
+
+            {/* 👉 Texto compacto */}
+            <div className="min-w-0">
+              <p className="text-sm font-semibold truncate">{station.name}</p>
+              <p className="hidden sm:block text-xs opacity-80 truncate">
+                {station.description}
+              </p>
             </div>
           </div>
 
           {/* CONTROLES */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <button onClick={prevStation}>
               <FiSkipBack size={18} />
             </button>
 
             <button
               onClick={toggle}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-fuchsia-600 text-white"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-fuchsia-600 text-white shadow-lg"
             >
               {isLoading ? (
                 <FiLoader className="animate-spin" />
@@ -79,13 +87,17 @@ const RadioPlayer = () => {
               <FiSkipForward size={18} />
             </button>
 
+            {/* Slider solo tablet+ */}
             <input
               type="range"
               min="0"
               max="1"
               step="0.05"
               value={volume}
-              onChange={(e) => changeVolume(Number(e.target.value))}
+              onChange={(e) =>
+                changeVolume(Math.min(1, Math.max(0, Number(e.target.value))))
+              }
+              className="hidden md:block w-20"
             />
 
             <button onClick={() => setOpenPanel(!openPanel)}>

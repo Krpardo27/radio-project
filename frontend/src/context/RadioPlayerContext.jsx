@@ -1,10 +1,17 @@
 import { createContext, useEffect, useRef, useState } from "react";
+import {
+  clamp,
+  fade,
+  normalizeUrl,
+  waitForAudio,
+} from "../utils/audio/audio-utils";
 
 export const RadioPlayerContext = createContext();
 
 export const RadioPlayerProvider = ({ children }) => {
   const audioRef = useRef(null);
   const loadingStart = useRef(null);
+  const changeId = useRef(0);
 
   const [station, setStation] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -20,6 +27,7 @@ export const RadioPlayerProvider = ({ children }) => {
   const MIN_LOADING_TIME = 500;
 
   const startLoading = () => {
+    if (!audioRef.current?.src) return;
     loadingStart.current = Date.now();
     setIsLoading(true);
   };
@@ -49,35 +57,47 @@ export const RadioPlayerProvider = ({ children }) => {
     changeStation(stations[prev]);
   };
 
-  const changeStation = async (newStation) => {
+  const changeStation = async (newStation, { autoplay = true } = {}) => {
     const audio = audioRef.current;
     if (!audio || !newStation?.streamUrl) return;
 
-    try {
-      const wasPlaying = !audio.paused;
+    const id = ++changeId.current;
 
+    try {
       setIsLoading(true);
       setStation(newStation);
 
+      // 👉 Fade OUT actual si hay audio
+      if (audio.src) {
+        await fade(audio, 0, 200);
+      }
+
+      // 👉 Reset audio
       audio.pause();
-      audio.src = newStation.streamUrl;
+      audio.removeAttribute("src");
       audio.load();
 
-      await new Promise((resolve, reject) => {
-        audio.addEventListener("canplay", resolve, { once: true });
-        audio.addEventListener("error", reject, { once: true });
-      });
+      // 👉 Validar URL
+      const url = normalizeUrl(newStation.streamUrl);
+      if (!url) throw new Error("Invalid URL");
 
-      if (wasPlaying) await audio.play();
-      setIsLoading(false);
+      audio.src = url;
+      audio.load();
+
+      await waitForAudio(audio, 8000);
+
+      if (id !== changeId.current) return;
+
+      // 👉 Autoplay + Fade IN
+      if (autoplay) {
+        audio.volume = 0;
+        await audio.play().catch(() => {});
+        await fade(audio, clamp(volume), 200);
+      }
     } catch (err) {
-      console.error("❌ Stream inválido:", newStation.streamUrl);
-
+      console.error("❌ Stream inválido:", newStation.streamUrl, err);
+    } finally {
       setIsLoading(false);
-      setIsPlaying(false);
-
-      // 👉 auto skip
-      nextStation();
     }
   };
 
@@ -86,12 +106,18 @@ export const RadioPlayerProvider = ({ children }) => {
     const audio = audioRef.current;
     if (!audio) return;
 
+    audioRef.current.addEventListener("error", (e) =>
+      console.log("AUDIO ERROR:", e, audioRef.current.src),
+    );
+
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
     const onError = () => {
       setIsLoading(false);
       setIsPlaying(false);
     };
+
+    const logError = (e) => console.log("AUDIO ERROR:", e, audio.src);
 
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
@@ -107,6 +133,7 @@ export const RadioPlayerProvider = ({ children }) => {
       audio.removeEventListener("playing", stopLoading);
       audio.removeEventListener("canplay", stopLoading);
       audio.removeEventListener("error", onError);
+      audio.removeEventListener("error", logError);
     };
   }, []); // ✅ correcto
 
@@ -120,11 +147,11 @@ export const RadioPlayerProvider = ({ children }) => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    startLoading();
-
-    await audio.play();
-
-    setTimeout(() => stopLoading(), 1000);
+    try {
+      await audio.play();
+    } catch (e) {
+      console.log("User interaction needed");
+    }
   };
 
   const pause = () => audioRef.current?.pause();

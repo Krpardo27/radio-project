@@ -4,6 +4,9 @@ import morgan from "morgan";
 
 const app = express();
 
+import stationRoutes from "./routes/StationRoutes.js";
+import homeRoutes from "./routes/HomeRoutes.js";
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://radio-project-lemon.vercel.app",
@@ -27,14 +30,9 @@ app.use(
 
 app.use(express.json());
 app.use(morgan("dev"));
-
-import stationRoutes from "./routes/StationRoutes.js";
-import homeRoutes from "./routes/HomeRoutes.js";
-
 app.get("/", (req, res) => {
   res.json({ ok: true, msg: "Radio API running 🚀" });
 });
-
 app.use("/api/stations", stationRoutes);
 app.use("/api/home", homeRoutes);
 
